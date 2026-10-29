@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, ExternalLink, Cpu, CheckCircle2, Layers, Calendar, UserCheck, ArrowRight } from 'lucide-react';
+import { X, ExternalLink, Cpu, CheckCircle2, Layers, Calendar, UserCheck, ArrowRight, Zap, Radio } from 'lucide-react';
 import { Project } from '../utils/portfolioLogic';
 import { ModelType } from './SpatialViewport';
 
@@ -7,9 +7,10 @@ interface ProjectModalProps {
   project: Project | null;
   onClose: () => void;
   onInspect3D: (model: ModelType) => void;
+  onTriggerJarvisBrief?: (project: Project) => void;
 }
 
-export function ProjectModal({ project, onClose, onInspect3D }: ProjectModalProps) {
+export function ProjectModal({ project, onClose, onInspect3D, onTriggerJarvisBrief }: ProjectModalProps) {
   if (!project) return null;
 
   return (
@@ -46,6 +47,23 @@ export function ProjectModal({ project, onClose, onInspect3D }: ProjectModalProp
         <p className="text-sm sm:text-base text-neutral-300 mb-6">
           {project.tagline}
         </p>
+
+        {/* JARVIS Vocal Briefing Banner */}
+        {onTriggerJarvisBrief && (
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 mb-6 rounded-xl bg-cyan-950/40 border border-cyan-500/40 shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+            <div className="flex items-center gap-2.5 text-xs text-cyan-300">
+              <Zap className="w-4 h-4 text-cyan-400 animate-pulse shrink-0" />
+              <span>J.A.R.V.I.S. is primed to explain this project's architecture aloud.</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => onTriggerJarvisBrief(project)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-bold text-neutral-950 bg-cyan-400 hover:bg-cyan-300 rounded-lg shadow-sm transition-all hover:scale-105 active:scale-95"
+            >
+              <span>Play Voice Brief</span>
+            </button>
+          </div>
+        )}
 
         {/* Detailed Narrative */}
         <div className="space-y-6 text-sm text-neutral-300">

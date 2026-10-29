@@ -7,6 +7,11 @@ import {
   buildMailtoUrl,
   formatPhoneNumber,
   filterSkills,
+  getProficiencyDetails,
+  getBootStepProgress,
+  JARVIS_BOOT_STEPS,
+  getJarvisProjectBrief,
+  getJarvisAboutBrief,
   Project,
   SkillItem,
 } from './portfolioLogic';
@@ -169,4 +174,69 @@ test('formatPhoneNumber cleans phone strings for tel link', () => {
   const formatted = formatPhoneNumber('+91 7305715012');
   assert.equal(formatted.display, '+91 7305715012');
   assert.equal(formatted.tel, 'tel:+917305715012');
+});
+
+test('getProficiencyDetails returns correct tier and active segments', () => {
+  const spec = getProficiencyDetails(95);
+  assert.equal(spec.tier, 'Specialist');
+  assert.equal(spec.activeSegments, 5);
+
+  const adv = getProficiencyDetails(89);
+  assert.equal(adv.tier, 'Advanced');
+  assert.equal(adv.activeSegments, 4);
+
+  const prof = getProficiencyDetails(85);
+  assert.equal(prof.tier, 'Proficient');
+  assert.equal(prof.activeSegments, 3);
+
+  const core = getProficiencyDetails(75);
+  assert.equal(core.tier, 'Core Competency');
+  assert.equal(core.activeSegments, 2);
+});
+
+test('getBootStepProgress accurately calculates progression percentage', () => {
+  assert.equal(getBootStepProgress(0, 4), 25);
+  assert.equal(getBootStepProgress(1, 4), 50);
+  assert.equal(getBootStepProgress(2, 4), 75);
+  assert.equal(getBootStepProgress(3, 4), 100);
+  assert.equal(getBootStepProgress(4, 4), 100);
+  assert.equal(getBootStepProgress(0, 0), 100);
+});
+
+test('JARVIS_BOOT_STEPS contains authentic welcome and authentication stages', () => {
+  assert.equal(JARVIS_BOOT_STEPS.length, 4);
+  assert.equal(JARVIS_BOOT_STEPS[0].system, 'CORE_KERNEL');
+  assert.equal(JARVIS_BOOT_STEPS[1].system, 'BIOMETRICS');
+  assert.ok(JARVIS_BOOT_STEPS[1].message.includes('ARJUN A'));
+  assert.ok(JARVIS_BOOT_STEPS[3].message.includes('Welcome back, Arjun'));
+});
+
+test('getJarvisProjectBrief provides custom voice narration for every project', () => {
+  const arvr = getJarvisProjectBrief('arvr');
+  assert.ok(arvr.voiceIntro.includes('ARVR Interviewer'));
+  assert.ok(arvr.systemStatus.includes('60 FPS VR READY'));
+
+  const praya = getJarvisProjectBrief('praya');
+  assert.ok(praya.voiceIntro.includes('Praya Labs digital twin'));
+  assert.equal(praya.highlights.length, 3);
+
+  const drone = getJarvisProjectBrief('drone');
+  assert.ok(drone.voiceIntro.includes('Aerial observation telemetry'));
+
+  const mobile = getJarvisProjectBrief('mobile');
+  assert.ok(mobile.voiceIntro.includes('student collaborative learning'));
+
+  const fallback = getJarvisProjectBrief('unknown-id');
+  assert.ok(fallback.voiceIntro.includes('unknown-id'));
+});
+
+test('getJarvisAboutBrief provides comprehensive vocal bio and telemetry for Arjun', () => {
+  const bio = getJarvisAboutBrief();
+  assert.equal(bio.identity, 'Arjun A');
+  assert.equal(bio.graduationYear, '2026');
+  assert.ok(bio.institution.includes('Akshaya'));
+  assert.ok(bio.voiceScript.includes('Allow me to introduce Arjun'));
+  assert.ok(bio.voiceScript.includes('Praya Labs'));
+  assert.ok(bio.coreHighlights.length >= 4);
+  assert.ok(bio.systemTelemetry.length >= 4);
 });

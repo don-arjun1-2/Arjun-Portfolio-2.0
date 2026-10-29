@@ -10,12 +10,18 @@ import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { ProjectModal } from './components/ProjectModal';
 import { ResumeModal } from './components/ResumeModal';
+import { JarvisWelcomeOverlay } from './components/JarvisWelcomeOverlay';
+import { JarvisProjectBriefModal } from './components/JarvisProjectBriefModal';
+import { JarvisAboutModal } from './components/JarvisAboutModal';
 import { ModelType } from './components/SpatialViewport';
 import { Project } from './utils/portfolioLogic';
 
 export default function App() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [jarvisBriefProject, setJarvisBriefProject] = useState<Project | null>(null);
   const [isResumeOpen, setIsResumeOpen] = useState(false);
+  const [isJarvisAboutOpen, setIsJarvisAboutOpen] = useState(false);
+  const [showJarvisWelcome, setShowJarvisWelcome] = useState(true);
   const [activeSpatialModel, setActiveSpatialModel] = useState<ModelType>('headset');
 
   const handleInspect3D = (model: ModelType) => {
@@ -41,24 +47,39 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans selection:bg-indigo-500/30 selection:text-indigo-200">
-      {/* 3-Zone Top Navigation */}
-      <Navigation
-        onOpenResume={() => setIsResumeOpen(true)}
-        onOpenContact={handleScrollToContact}
+    <div className="min-h-screen relative text-neutral-100 flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-200 bg-neutral-950 overflow-x-hidden">
+      {/* Sci-Fi Cyber HUD Background Image Layer */}
+      <div
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat bg-fixed opacity-50 pointer-events-none"
+        style={{
+          backgroundImage: `url('/assets/aistudio/file_00000000e83c8208a52b2a4ba944f902_4131373d.png')`,
+        }}
       />
 
-      {/* Main Content Sections */}
-      <main className="flex-1">
-        <Hero
+      {/* Atmospheric gradient overlay for high contrast and legible typography */}
+      <div className="fixed inset-0 z-0 bg-gradient-to-b from-neutral-950/80 via-neutral-950/65 to-neutral-950/90 pointer-events-none" />
+
+      {/* Foreground Content */}
+      <div className="relative z-10 flex flex-col min-h-screen">
+        {/* 3-Zone Top Navigation */}
+        <Navigation
           onOpenResume={() => setIsResumeOpen(true)}
-          onExploreProjects={handleScrollToProjects}
-          onSelectModel={setActiveSpatialModel}
+          onOpenContact={handleScrollToContact}
+          onReplayJarvis={() => setShowJarvisWelcome(true)}
         />
+
+        {/* Main Content Sections */}
+        <main className="flex-1">
+          <Hero
+            onOpenResume={() => setIsResumeOpen(true)}
+            onExploreProjects={handleScrollToProjects}
+            onOpenJarvisAbout={() => setIsJarvisAboutOpen(true)}
+          />
 
         <ProjectsSection
           onSelectProject={(project) => setSelectedProject(project)}
           onInspect3D={handleInspect3D}
+          onJarvisBrief={(project) => setJarvisBriefProject(project)}
         />
 
         <SpatialLabSection
@@ -83,12 +104,36 @@ export default function App() {
         project={selectedProject}
         onClose={() => setSelectedProject(null)}
         onInspect3D={handleInspect3D}
+        onTriggerJarvisBrief={(project) => setJarvisBriefProject(project)}
       />
 
       <ResumeModal
         isOpen={isResumeOpen}
         onClose={() => setIsResumeOpen(false)}
       />
+
+      {/* J.A.R.V.I.S. Project Voice Briefing Modal */}
+      {jarvisBriefProject && (
+        <JarvisProjectBriefModal
+          project={jarvisBriefProject}
+          onClose={() => setJarvisBriefProject(null)}
+          onInspect3D={handleInspect3D}
+        />
+      )}
+
+      {/* J.A.R.V.I.S. About Arjun Voice Briefing Modal */}
+      <JarvisAboutModal
+        isOpen={isJarvisAboutOpen}
+        onClose={() => setIsJarvisAboutOpen(false)}
+        onExploreProjects={handleScrollToProjects}
+        onOpenResume={() => setIsResumeOpen(true)}
+      />
+
+      {/* J.A.R.V.I.S. Welcome Cinematic Entry Animation */}
+      {showJarvisWelcome && (
+        <JarvisWelcomeOverlay onComplete={() => setShowJarvisWelcome(false)} />
+      )}
+      </div>
     </div>
   );
 }

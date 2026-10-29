@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Menu, X, FileText, Send } from 'lucide-react';
+import { Menu, X, FileText, Send, Zap } from 'lucide-react';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 
 interface NavigationProps {
   onOpenResume: () => void;
   onOpenContact: () => void;
+  onReplayJarvis?: () => void;
 }
 
-export function Navigation({ onOpenResume, onOpenContact }: NavigationProps) {
+export function Navigation({ onOpenResume, onOpenContact, onReplayJarvis }: NavigationProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -61,8 +62,20 @@ export function Navigation({ onOpenResume, onOpenContact }: NavigationProps) {
           </a>
         </nav>
 
-        {/* Zone 3: 1 primary action */}
-        <div className="flex items-center gap-3 shrink-0">
+        {/* Zone 3: Actions */}
+        <div className="flex items-center gap-2.5 shrink-0">
+          {onReplayJarvis && (
+            <button
+              type="button"
+              onClick={onReplayJarvis}
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-mono font-medium text-cyan-300 bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-500/40 rounded-lg transition-colors whitespace-nowrap shrink-0 shadow-[0_0_10px_rgba(6,182,212,0.15)]"
+              title="Replay J.A.R.V.I.S. Welcome Sequence"
+            >
+              <Zap className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+              <span className="hidden sm:inline">JARVIS HUD</span>
+            </button>
+          )}
+
           <button
             type="button"
             onClick={onOpenResume}
@@ -75,7 +88,7 @@ export function Navigation({ onOpenResume, onOpenContact }: NavigationProps) {
           <button
             type="button"
             onClick={onOpenContact}
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg shadow-sm transition-colors whitespace-nowrap shrink-0"
+            className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg shadow-sm transition-colors whitespace-nowrap shrink-0"
           >
             <Send className="w-3.5 h-3.5" />
             <span>Get in Touch</span>

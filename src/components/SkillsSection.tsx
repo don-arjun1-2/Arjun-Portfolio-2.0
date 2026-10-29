@@ -1,7 +1,35 @@
 import React, { useState } from 'react';
-import { Layers, Globe, Code, PenTool, Search, CheckCircle2, Terminal, Sparkles, Filter } from 'lucide-react';
+import {
+  Layers,
+  Globe,
+  Code,
+  Box,
+  Compass,
+  Search,
+  BarChart3,
+  Glasses,
+  Boxes,
+  Smartphone,
+  Orbit,
+  Shapes,
+  SunMedium,
+  Scan,
+  Sparkles,
+  Camera,
+  Film,
+  Server,
+  Code2,
+  Crosshair,
+  Cpu,
+  GitBranch,
+} from 'lucide-react';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
-import { filterSkills, SkillFilterCategory, SkillItem } from '../utils/portfolioLogic';
+import {
+  filterSkills,
+  getProficiencyDetails,
+  SkillFilterCategory,
+  SkillItem,
+} from '../utils/portfolioLogic';
 
 export function SkillsSection() {
   const { skillItems, languages } = PORTFOLIO_DATA;
@@ -40,6 +68,45 @@ export function SkillsSection() {
       count: skillItems.filter((s) => s.category === 'programming').length,
     },
   ];
+
+  const renderSkillIcon = (iconName?: string) => {
+    switch (iconName) {
+      case 'Glasses':
+        return <Glasses className="w-5 h-5 text-indigo-400" />;
+      case 'Boxes':
+        return <Boxes className="w-5 h-5 text-indigo-400" />;
+      case 'Smartphone':
+        return <Smartphone className="w-5 h-5 text-indigo-400" />;
+      case 'Orbit':
+        return <Orbit className="w-5 h-5 text-indigo-400" />;
+      case 'Shapes':
+        return <Shapes className="w-5 h-5 text-cyan-400" />;
+      case 'SunMedium':
+        return <SunMedium className="w-5 h-5 text-cyan-400" />;
+      case 'Scan':
+        return <Scan className="w-5 h-5 text-cyan-400" />;
+      case 'Sparkles':
+        return <Sparkles className="w-5 h-5 text-cyan-400" />;
+      case 'Camera':
+        return <Camera className="w-5 h-5 text-cyan-400" />;
+      case 'Film':
+        return <Film className="w-5 h-5 text-cyan-400" />;
+      case 'Server':
+        return <Server className="w-5 h-5 text-violet-400" />;
+      case 'Code2':
+        return <Code2 className="w-5 h-5 text-violet-400" />;
+      case 'Crosshair':
+        return <Crosshair className="w-5 h-5 text-violet-400" />;
+      case 'Cpu':
+        return <Cpu className="w-5 h-5 text-violet-400" />;
+      case 'Globe':
+        return <Globe className="w-5 h-5 text-violet-400" />;
+      case 'GitBranch':
+        return <GitBranch className="w-5 h-5 text-violet-400" />;
+      default:
+        return <Code className="w-5 h-5 text-indigo-400" />;
+    }
+  };
 
   return (
     <section id="skills" className="py-16 px-6 max-w-7xl mx-auto border-t border-neutral-900">
@@ -142,47 +209,88 @@ export function SkillsSection() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-14">
-          {displayedSkills.map((skill) => (
-            <div
-              key={skill.id}
-              className="p-6 rounded-2xl bg-neutral-900/60 border border-neutral-800 hover:border-neutral-700 transition-all duration-200 flex flex-col justify-between"
-            >
-              <div>
-                {/* Unboxed Metadata Header */}
-                <div className="flex items-center justify-between gap-2 text-xs text-neutral-400 mb-2.5">
-                  <span className="text-indigo-400 font-medium uppercase tracking-wider text-[11px]">
-                    {skill.categoryLabel}
-                  </span>
-                  <span className="font-mono text-neutral-300 font-medium">
-                    {skill.level}
-                  </span>
+          {displayedSkills.map((skill) => {
+            const details = getProficiencyDetails(skill.proficiency);
+
+            return (
+              <div
+                key={skill.id}
+                className="group p-6 rounded-2xl bg-neutral-900/60 border border-neutral-800 hover:border-neutral-700/90 transition-all duration-200 flex flex-col justify-between shadow-sm hover:shadow-md"
+              >
+                <div>
+                  {/* Card Header: Category & Level */}
+                  <div className="flex items-center justify-between gap-2 text-xs text-neutral-400 mb-3">
+                    <div className="flex items-center gap-1.5">
+                      {skill.category === 'core_domains' && <Compass className="w-3.5 h-3.5 text-indigo-400 shrink-0" />}
+                      {skill.category === 'design_tools' && <Box className="w-3.5 h-3.5 text-cyan-400 shrink-0" />}
+                      {skill.category === 'programming' && <Code className="w-3.5 h-3.5 text-violet-400 shrink-0" />}
+                      <span className="text-indigo-300 font-medium uppercase tracking-wider text-[11px]">
+                        {skill.categoryLabel}
+                      </span>
+                    </div>
+                    <span className="font-mono text-neutral-300 font-semibold text-xs bg-neutral-800/80 px-2 py-0.5 rounded border border-neutral-700/60">
+                      {skill.level}
+                    </span>
+                  </div>
+
+                  {/* Skill Name with Relevant Lucide React Icon */}
+                  <div className="flex items-center gap-3 mb-2.5">
+                    <div className="p-2 rounded-xl bg-neutral-950 border border-neutral-800 text-neutral-300 group-hover:border-neutral-700 group-hover:bg-neutral-900/80 transition-colors shrink-0 shadow-inner">
+                      {renderSkillIcon(skill.iconName)}
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight leading-snug group-hover:text-indigo-200 transition-colors">
+                      {skill.name}
+                    </h3>
+                  </div>
+
+                  {/* Real-World Context & Experience Application */}
+                  <p className="text-xs text-neutral-300 leading-relaxed mb-5 min-h-[3rem]">
+                    {skill.experienceContext}
+                  </p>
                 </div>
 
-                {/* Skill Name */}
-                <h3 className="text-lg font-bold text-white tracking-tight mb-2">
-                  {skill.name}
-                </h3>
+                <div>
+                  {/* Visual Proficiency Level Section (Enhanced Depth & Metrics) */}
+                  <div className="p-4 rounded-xl bg-neutral-950/80 border border-neutral-800/90 mb-4">
+                    {/* Numerical percentage & qualitative stage */}
+                    <div className="flex items-baseline justify-between mb-2">
+                      <div className="flex items-center gap-1.5">
+                        <BarChart3 className="w-3.5 h-3.5 text-indigo-400" />
+                        <span className="text-xs font-medium text-neutral-300">
+                          {details.stageLabel}
+                        </span>
+                      </div>
+                      <span className="text-lg font-bold font-mono text-white tabular-nums tracking-tight">
+                        {skill.proficiency}%
+                      </span>
+                    </div>
 
-                {/* Real-World Context & Experience Application */}
-                <p className="text-xs text-neutral-300 leading-relaxed mb-4">
-                  {skill.experienceContext}
-                </p>
-              </div>
+                    {/* Continuous Gradient Progress Track */}
+                    <div className="w-full bg-neutral-800 h-2 rounded-full overflow-hidden mb-2 relative">
+                      <div
+                        className="bg-gradient-to-r from-indigo-500 via-indigo-400 to-cyan-400 h-2 rounded-full transition-all duration-700 ease-out shadow-sm"
+                        style={{ width: `${skill.proficiency}%` }}
+                      />
+                    </div>
 
-              <div>
-                {/* Proficiency Gauge Bar */}
-                <div className="mb-4">
-                  <div className="flex justify-between text-[11px] text-neutral-400 mb-1">
-                    <span>Proficiency</span>
-                    <span className="font-mono text-neutral-300 font-semibold">{skill.proficiency}%</span>
+                    {/* 5-Segment Milestone Indicator */}
+                    <div className="flex items-center justify-between gap-1 pt-1">
+                      {[1, 2, 3, 4, 5].map((seg) => {
+                        const isFilled = seg <= details.activeSegments;
+                        return (
+                          <div
+                            key={seg}
+                            className={`h-1 flex-1 rounded-sm transition-colors ${
+                              isFilled
+                                ? 'bg-indigo-500/80'
+                                : 'bg-neutral-800/60'
+                            }`}
+                            title={`Milestone Level ${seg} of 5`}
+                          />
+                        );
+                      })}
+                    </div>
                   </div>
-                  <div className="w-full bg-neutral-800 h-1.5 rounded-full overflow-hidden">
-                    <div
-                      className="bg-indigo-500 h-1.5 rounded-full transition-all duration-500"
-                      style={{ width: `${skill.proficiency}%` }}
-                    />
-                  </div>
-                </div>
 
                 {/* Tag Pills unboxed */}
                 <div className="flex flex-wrap gap-1.5 pt-3 border-t border-neutral-800/60">
@@ -197,8 +305,9 @@ export function SkillsSection() {
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
+      </div>
       )}
 
       {/* Multilingual Fluency Section */}

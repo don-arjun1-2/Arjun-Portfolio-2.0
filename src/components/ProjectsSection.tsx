@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowUpRight, Cpu, Eye, Box, Smartphone, Check, Sparkles, Filter } from 'lucide-react';
+import { ArrowUpRight, Cpu, Eye, Box, Smartphone, Check, Sparkles, Filter, Zap, Radio } from 'lucide-react';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 import { Project, filterProjects } from '../utils/portfolioLogic';
 import { ModelType } from './SpatialViewport';
@@ -7,9 +7,10 @@ import { ModelType } from './SpatialViewport';
 interface ProjectsSectionProps {
   onSelectProject: (project: Project) => void;
   onInspect3D: (model: ModelType) => void;
+  onJarvisBrief?: (project: Project) => void;
 }
 
-export function ProjectsSection({ onSelectProject, onInspect3D }: ProjectsSectionProps) {
+export function ProjectsSection({ onSelectProject, onInspect3D, onJarvisBrief }: ProjectsSectionProps) {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const allProjects = PORTFOLIO_DATA.projects;
   const filteredProjects = filterProjects(allProjects, activeCategory);
@@ -65,7 +66,14 @@ export function ProjectsSection({ onSelectProject, onInspect3D }: ProjectsSectio
           return (
             <div
               key={project.id}
-              className={`group flex flex-col justify-between p-6 sm:p-7 rounded-2xl bg-neutral-900/70 border border-neutral-800/80 hover:border-neutral-700 transition-all duration-200 shadow-sm ${
+              onClick={() => {
+                if (onJarvisBrief) {
+                  onJarvisBrief(project);
+                } else {
+                  onSelectProject(project);
+                }
+              }}
+              className={`group cursor-pointer flex flex-col justify-between p-6 sm:p-7 rounded-2xl bg-neutral-900/70 border border-neutral-800/80 hover:border-cyan-500/50 hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] transition-all duration-200 ${
                 isWide ? 'md:col-span-2' : 'col-span-1'
               }`}
             >
@@ -122,20 +130,43 @@ export function ProjectsSection({ onSelectProject, onInspect3D }: ProjectsSectio
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex items-center justify-between gap-3 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => onSelectProject(project)}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
-                  >
-                    <span>Read Architecture Specs</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </button>
+                <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2">
+                  <div className="flex items-center gap-2">
+                    {onJarvisBrief && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onJarvisBrief(project);
+                        }}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium text-cyan-300 hover:text-cyan-200 bg-cyan-950/60 hover:bg-cyan-900/80 border border-cyan-500/40 rounded-lg transition-all shadow-[0_0_12px_rgba(6,182,212,0.2)] active:scale-95"
+                        title="Touch to have JARVIS explain this project"
+                      >
+                        <Zap className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+                        <span>JARVIS Brief</span>
+                      </button>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectProject(project);
+                      }}
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
+                    >
+                      <span>Specs</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
 
                   {project.modelType && (
                     <button
                       type="button"
-                      onClick={() => onInspect3D(project.modelType!)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onInspect3D(project.modelType!);
+                      }}
                       className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-neutral-300 hover:text-white bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 rounded-lg transition-colors"
                       title="Load model into 3D Spatial Viewport"
                     >
