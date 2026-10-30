@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#083344" />
+      <stop offset="60%" stop-color="#020617" />
+      <stop offset="100%" stop-color="#000000" />
+    </radialGradient>
+    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#a5f3fc" />
+      <stop offset="40%" stop-color="#06b6d4" />
+      <stop offset="80%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#082f49" />
+    </radialGradient>
+    <filter id="neonBlur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGlow)" />
+  <rect width="504" height="504" x="4" y="4" rx="108" fill="none" stroke="#06b6d4" stroke-width="2" stroke-opacity="0.3" />
+
+  <!-- Outer HUD Ring -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#0891b2" stroke-width="3" stroke-dasharray="16 12" stroke-opacity="0.7" />
+  <circle cx="256" cy="256" r="160" fill="none" stroke="#22d3ee" stroke-width="2" stroke-opacity="0.5" />
+
+  <!-- Segmented Arc Rings -->
+  <circle cx="256" cy="256" r="130" fill="none" stroke="#06b6d4" stroke-width="6" stroke-dasharray="70 30" filter="url(#neonBlur)" />
+  <circle cx="256" cy="256" r="105" fill="none" stroke="#38bdf8" stroke-width="4" stroke-dasharray="45 15" stroke-opacity="0.8" />
+
+  <!-- Core Glowing Arc Reactor -->
+  <circle cx="256" cy="256" r="70" fill="url(#coreGlow)" filter="url(#neonBlur)" />
+  <circle cx="256" cy="256" r="72" fill="none" stroke="#e0f2fe" stroke-width="3" />
+
+  <!-- Center Hologram Triangle & Letter A -->
+  <path d="M256 205 L285 265 L227 265 Z" fill="#020617" stroke="#e0f2fe" stroke-width="3" />
+  <path d="M246 250 L266 250" stroke="#22d3ee" stroke-width="3" />
+
+  <!-- Label Typography -->
+  <text x="256" y="380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="900" fill="#22d3ee" text-anchor="middle" letter-spacing="6">ARJUN</text>
+  <text x="256" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#7dd3fc" text-anchor="middle" letter-spacing="4">SPATIAL OS</text>
+</svg>

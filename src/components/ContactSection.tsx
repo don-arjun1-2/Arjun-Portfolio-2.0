@@ -31,6 +31,23 @@ export function ContactSection() {
     }
 
     setErrors({});
+    // Persist to Firestore database
+    try {
+      import('../lib/firebase').then(async ({ db, auth }) => {
+        const { collection, addDoc } = await import('firebase/firestore');
+        addDoc(collection(db, 'inquiries'), {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          senderUid: auth.currentUser?.uid || 'anonymous',
+          createdAt: new Date().toISOString(),
+        }).catch((err) => console.warn('Inquiry persistence warning:', err));
+      });
+    } catch (e) {
+      console.warn('Firebase inquiry error:', e);
+    }
+
     // Trigger direct mailto client
     const mailtoUrl = buildMailtoUrl(
       personal.emails.primary,

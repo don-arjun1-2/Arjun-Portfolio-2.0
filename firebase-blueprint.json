@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with authentication and portfolio preferences",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth user ID" },
+        "email": { "type": "string", "description": "User email address" },
+        "displayName": { "type": "string", "description": "Display name" },
+        "photoURL": { "type": "string", "description": "Profile picture URL" },
+        "createdAt": { "type": "string", "description": "ISO timestamp" },
+        "lastLoginAt": { "type": "string", "description": "ISO timestamp" },
+        "bookmarkedProjects": { "type": "array", "description": "List of bookmarked project IDs" }
+      },
+      "required": ["uid", "email"]
+    },
+    "ContactInquiry": {
+      "title": "ContactInquiry",
+      "description": "Recruiter and visitor contact inquiries submitted to Arjun",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique inquiry ID" },
+        "senderUid": { "type": "string", "description": "Auth UID if authenticated or anonymous" },
+        "name": { "type": "string", "description": "Sender full name" },
+        "email": { "type": "string", "description": "Sender email" },
+        "subject": { "type": "string", "description": "Message subject" },
+        "message": { "type": "string", "description": "Message content" },
+        "createdAt": { "type": "string", "description": "ISO timestamp" }
+      },
+      "required": ["name", "email", "message", "createdAt"]
+    },
+    "VoiceConversationSession": {
+      "title": "VoiceConversationSession",
+      "description": "Saved live voice conversation logs and telemetry with gemini-3.8-live",
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string", "description": "Unique session ID" },
+        "userId": { "type": "string", "description": "User UID who initiated the conversation" },
+        "userEmail": { "type": "string", "description": "User email" },
+        "model": { "type": "string", "description": "AI model name: gemini-3.8-live" },
+        "startedAt": { "type": "string", "description": "ISO timestamp" },
+        "durationSeconds": { "type": "number", "description": "Session duration" },
+        "transcriptSummary": { "type": "string", "description": "Summary or key points from discussion" }
+      },
+      "required": ["sessionId", "userId", "startedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile data accessible by the owner"
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": "ContactInquiry",
+      "description": "Contact inquiries sent to Arjun"
+    },
+    "/voice_sessions/{sessionId}": {
+      "schema": "VoiceConversationSession",
+      "description": "Recorded live voice conversation sessions"
+    }
+  }
+}

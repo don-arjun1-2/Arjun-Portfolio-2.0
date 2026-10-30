@@ -294,3 +294,41 @@ export function getJarvisAboutBrief(): JarvisAboutBrief {
   return JARVIS_ABOUT_BRIEF;
 }
 
+export interface MobilePlatformDetails {
+  isMobile: boolean;
+  isIos: boolean;
+  platformName: 'iOS' | 'Android' | 'Desktop';
+  installInstruction: string;
+}
+
+export function getInstallPlatformDetails(userAgent: string): MobilePlatformDetails {
+  const isIos = /iPhone|iPad|iPod/i.test(userAgent);
+  const isAndroid = /Android/i.test(userAgent);
+  const isMobile = isIos || isAndroid || /webOS|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+
+  if (isIos) {
+    return {
+      isMobile: true,
+      isIos: true,
+      platformName: 'iOS',
+      installInstruction: "Tap the Safari Share button and choose 'Add to Home Screen'.",
+    };
+  }
+
+  if (isAndroid) {
+    return {
+      isMobile: true,
+      isIos: false,
+      platformName: 'Android',
+      installInstruction: "Tap 'Install App' or Chrome menu > 'Install application'.",
+    };
+  }
+
+  return {
+    isMobile: false,
+    isIos: false,
+    platformName: 'Desktop',
+    installInstruction: 'Click the install icon in your browser address bar to install.',
+  };
+}
+

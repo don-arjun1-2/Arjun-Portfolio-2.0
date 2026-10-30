@@ -12,6 +12,7 @@ import {
   JARVIS_BOOT_STEPS,
   getJarvisProjectBrief,
   getJarvisAboutBrief,
+  getInstallPlatformDetails,
   Project,
   SkillItem,
 } from './portfolioLogic';
@@ -239,4 +240,25 @@ test('getJarvisAboutBrief provides comprehensive vocal bio and telemetry for Arj
   assert.ok(bio.voiceScript.includes('Praya Labs'));
   assert.ok(bio.coreHighlights.length >= 4);
   assert.ok(bio.systemTelemetry.length >= 4);
+});
+
+test('getInstallPlatformDetails detects iOS, Android, and Desktop environments accurately', () => {
+  const iosUa = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148';
+  const iosDetails = getInstallPlatformDetails(iosUa);
+  assert.equal(iosDetails.isMobile, true);
+  assert.equal(iosDetails.isIos, true);
+  assert.equal(iosDetails.platformName, 'iOS');
+  assert.ok(iosDetails.installInstruction.includes('Safari Share'));
+
+  const androidUa = 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/120.0 Mobile Safari/537.36';
+  const androidDetails = getInstallPlatformDetails(androidUa);
+  assert.equal(androidDetails.isMobile, true);
+  assert.equal(androidDetails.isIos, false);
+  assert.equal(androidDetails.platformName, 'Android');
+  assert.ok(androidDetails.installInstruction.includes('Install App'));
+
+  const desktopUa = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120.0 Safari/537.36';
+  const desktopDetails = getInstallPlatformDetails(desktopUa);
+  assert.equal(desktopDetails.isMobile, false);
+  assert.equal(desktopDetails.platformName, 'Desktop');
 });

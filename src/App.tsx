@@ -13,6 +13,9 @@ import { ResumeModal } from './components/ResumeModal';
 import { JarvisWelcomeOverlay } from './components/JarvisWelcomeOverlay';
 import { JarvisProjectBriefModal } from './components/JarvisProjectBriefModal';
 import { JarvisAboutModal } from './components/JarvisAboutModal';
+import { MobileInstallModal } from './components/MobileInstallModal';
+import { MobileBottomNav } from './components/MobileBottomNav';
+import { LiveVoiceModal } from './components/LiveVoiceModal';
 import { ModelType } from './components/SpatialViewport';
 import { Project } from './utils/portfolioLogic';
 
@@ -21,6 +24,8 @@ export default function App() {
   const [jarvisBriefProject, setJarvisBriefProject] = useState<Project | null>(null);
   const [isResumeOpen, setIsResumeOpen] = useState(false);
   const [isJarvisAboutOpen, setIsJarvisAboutOpen] = useState(false);
+  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
+  const [isLiveVoiceOpen, setIsLiveVoiceOpen] = useState(false);
   const [showJarvisWelcome, setShowJarvisWelcome] = useState(true);
   const [activeSpatialModel, setActiveSpatialModel] = useState<ModelType>('headset');
 
@@ -46,6 +51,17 @@ export default function App() {
     }
   };
 
+  const handleScrollToSection = (sectionId: string) => {
+    if (sectionId === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    const el = document.getElementById(sectionId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="min-h-screen relative text-neutral-100 flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-200 bg-neutral-950 overflow-x-hidden">
       {/* Sci-Fi Cyber HUD Background Image Layer */}
@@ -60,12 +76,14 @@ export default function App() {
       <div className="fixed inset-0 z-0 bg-gradient-to-b from-neutral-950/80 via-neutral-950/65 to-neutral-950/90 pointer-events-none" />
 
       {/* Foreground Content */}
-      <div className="relative z-10 flex flex-col min-h-screen">
+      <div className="relative z-10 flex flex-col min-h-screen pb-24 md:pb-0">
         {/* 3-Zone Top Navigation */}
         <Navigation
           onOpenResume={() => setIsResumeOpen(true)}
           onOpenContact={handleScrollToContact}
           onReplayJarvis={() => setShowJarvisWelcome(true)}
+          onOpenInstall={() => setIsInstallModalOpen(true)}
+          onOpenLiveVoice={() => setIsLiveVoiceOpen(true)}
         />
 
         {/* Main Content Sections */}
@@ -74,6 +92,7 @@ export default function App() {
             onOpenResume={() => setIsResumeOpen(true)}
             onExploreProjects={handleScrollToProjects}
             onOpenJarvisAbout={() => setIsJarvisAboutOpen(true)}
+            onOpenLiveVoice={() => setIsLiveVoiceOpen(true)}
           />
 
         <ProjectsSection
@@ -129,10 +148,30 @@ export default function App() {
         onOpenResume={() => setIsResumeOpen(true)}
       />
 
+      {/* Gemini-3.8-Live Real-Time Voice Conversation Modal */}
+      <LiveVoiceModal
+        isOpen={isLiveVoiceOpen}
+        onClose={() => setIsLiveVoiceOpen(false)}
+      />
+
       {/* J.A.R.V.I.S. Welcome Cinematic Entry Animation */}
       {showJarvisWelcome && (
         <JarvisWelcomeOverlay onComplete={() => setShowJarvisWelcome(false)} />
       )}
+
+      {/* Mobile Application Install Modal (PWA) */}
+      <MobileInstallModal
+        isOpen={isInstallModalOpen}
+        onClose={() => setIsInstallModalOpen(false)}
+      />
+
+      {/* Floating Mobile Bottom Navigation Dock */}
+      <MobileBottomNav
+        onScrollTo={handleScrollToSection}
+        onOpenJarvis={() => setIsJarvisAboutOpen(true)}
+        onOpenInstall={() => setIsInstallModalOpen(true)}
+        onOpenLiveVoice={() => setIsLiveVoiceOpen(true)}
+      />
       </div>
     </div>
   );

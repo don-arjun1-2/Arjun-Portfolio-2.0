@@ -1,14 +1,15 @@
 import React from 'react';
-import { FileText, ArrowRight, MapPin, GraduationCap, Sparkles, Box, ShieldCheck, Terminal, Compass, Zap } from 'lucide-react';
+import { FileText, ArrowRight, MapPin, GraduationCap, Sparkles, Box, ShieldCheck, Terminal, Compass, Zap, Mic } from 'lucide-react';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 
 interface HeroProps {
   onOpenResume: () => void;
   onExploreProjects: () => void;
   onOpenJarvisAbout?: () => void;
+  onOpenLiveVoice?: () => void;
 }
 
-export function Hero({ onOpenResume, onExploreProjects, onOpenJarvisAbout }: HeroProps) {
+export function Hero({ onOpenResume, onExploreProjects, onOpenJarvisAbout, onOpenLiveVoice }: HeroProps) {
   const { personal, stats } = PORTFOLIO_DATA;
 
   return (
@@ -60,15 +61,27 @@ export function Hero({ onOpenResume, onExploreProjects, onOpenJarvisAbout }: Her
 
         {/* Primary Action Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+          {onOpenLiveVoice && (
+            <button
+              type="button"
+              onClick={onOpenLiveVoice}
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-neutral-950 bg-gradient-to-r from-cyan-400 to-sky-400 hover:from-cyan-300 hover:to-sky-300 rounded-xl shadow-[0_0_30px_rgba(6,182,212,0.7)] transition-all hover:scale-[1.03] active:scale-[0.97]"
+              title="Speak live with gemini-3.8-live"
+            >
+              <Mic className="w-4 h-4 text-neutral-950 fill-neutral-950 animate-pulse" />
+              <span>Talk Live with JARVIS</span>
+            </button>
+          )}
+
           {onOpenJarvisAbout && (
             <button
               type="button"
               onClick={onOpenJarvisAbout}
-              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-neutral-950 bg-cyan-400 hover:bg-cyan-300 rounded-xl shadow-[0_0_25px_rgba(6,182,212,0.6)] hover:shadow-[0_0_35px_rgba(6,182,212,0.9)] transition-all hover:scale-[1.03] active:scale-[0.97]"
+              className="inline-flex items-center gap-2 px-5 py-3 text-sm font-semibold text-cyan-300 bg-neutral-900/90 hover:bg-neutral-800 border border-cyan-500/40 rounded-xl shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
               title="Have J.A.R.V.I.S. verbally explain about Arjun"
             >
-              <Zap className="w-4 h-4 text-neutral-950 fill-neutral-950 animate-pulse" />
-              <span>Ask JARVIS About Arjun</span>
+              <Zap className="w-4 h-4 text-cyan-400 animate-pulse" />
+              <span>Bio Briefing</span>
             </button>
           )}
 
