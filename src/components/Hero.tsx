@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, ArrowRight, MapPin, GraduationCap, Sparkles, Box, ShieldCheck, Terminal, Compass, Zap, Mic } from 'lucide-react';
+import { FileText, ArrowRight, MapPin, GraduationCap, Sparkles, Box, ShieldCheck, Terminal, Compass, Zap, Mic, Bot } from 'lucide-react';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 
 interface HeroProps {
@@ -7,9 +7,10 @@ interface HeroProps {
   onExploreProjects: () => void;
   onOpenJarvisAbout?: () => void;
   onOpenLiveVoice?: () => void;
+  onOpenChatbot?: () => void;
 }
 
-export function Hero({ onOpenResume, onExploreProjects, onOpenJarvisAbout, onOpenLiveVoice }: HeroProps) {
+export function Hero({ onOpenResume, onExploreProjects, onOpenJarvisAbout, onOpenLiveVoice, onOpenChatbot }: HeroProps) {
   const { personal, stats } = PORTFOLIO_DATA;
 
   return (
@@ -59,15 +60,27 @@ export function Hero({ onOpenResume, onExploreProjects, onOpenJarvisAbout, onOpe
 
         {/* Primary Action Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+          {onOpenChatbot && (
+            <button
+              type="button"
+              onClick={onOpenChatbot}
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-neutral-950 bg-gradient-to-r from-cyan-400 to-sky-400 hover:from-cyan-300 hover:to-sky-300 rounded-xl shadow-[0_0_25px_rgba(6,182,212,0.6)] transition-all hover:scale-[1.03] active:scale-[0.97]"
+              title="Chat with J.A.R.V.I.S. AI Chatbot (gemini-3.8-flash)"
+            >
+              <Bot className="w-4 h-4 text-neutral-950" />
+              <span>Chat with J.A.R.V.I.S.</span>
+            </button>
+          )}
+
           {onOpenLiveVoice && (
             <button
               type="button"
               onClick={onOpenLiveVoice}
-              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-neutral-950 bg-gradient-to-r from-cyan-400 to-sky-400 hover:from-cyan-300 hover:to-sky-300 rounded-xl shadow-[0_0_30px_rgba(6,182,212,0.7)] transition-all hover:scale-[1.03] active:scale-[0.97]"
+              className="inline-flex items-center gap-2 px-5 py-3 text-sm font-semibold text-cyan-300 bg-neutral-900/90 hover:bg-neutral-800 border border-cyan-500/40 rounded-xl shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
               title="Speak live with gemini-3.8-live"
             >
-              <Mic className="w-4 h-4 text-neutral-950 fill-neutral-950 animate-pulse" />
-              <span>Talk Live with JARVIS</span>
+              <Mic className="w-4 h-4 text-cyan-400 animate-pulse" />
+              <span>Live Voice</span>
             </button>
           )}
 

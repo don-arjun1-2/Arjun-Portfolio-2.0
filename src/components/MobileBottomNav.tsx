@@ -1,11 +1,12 @@
 import React from 'react';
-import { Home, Layers, Box, Zap, Download, Send, Mic } from 'lucide-react';
+import { Home, Layers, Box, Zap, Download, Send, Mic, Bot } from 'lucide-react';
 
 interface MobileBottomNavProps {
   onScrollTo: (elementId: string) => void;
   onOpenJarvis: () => void;
   onOpenInstall: () => void;
   onOpenLiveVoice?: () => void;
+  onOpenChatbot?: () => void;
 }
 
 export function MobileBottomNav({
@@ -13,6 +14,7 @@ export function MobileBottomNav({
   onOpenJarvis,
   onOpenInstall,
   onOpenLiveVoice,
+  onOpenChatbot,
 }: MobileBottomNavProps) {
   return (
     <nav
@@ -48,6 +50,18 @@ export function MobileBottomNav({
           >
             <Mic className="w-4 h-4 fill-neutral-950 animate-pulse" />
             <span className="text-[9px] font-mono font-bold tracking-tight uppercase">VOICE</span>
+          </button>
+        )}
+
+        {onOpenChatbot && (
+          <button
+            type="button"
+            onClick={onOpenChatbot}
+            className="flex flex-col items-center justify-center w-14 h-12 rounded-xl text-neutral-300 hover:text-white hover:bg-neutral-900/60 active:scale-95 transition-all"
+            title="Chat with J.A.R.V.I.S."
+          >
+            <Bot className="w-4 h-4 text-cyan-400" />
+            <span className="text-[10px] font-mono tracking-tight">Chat</span>
           </button>
         )}
 

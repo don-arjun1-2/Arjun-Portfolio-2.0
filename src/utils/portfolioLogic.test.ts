@@ -18,6 +18,10 @@ import {
   toggleTheme,
   THEME_STORAGE_KEY,
   calculateScrollProgress,
+  createChatMessage,
+  JARVIS_CHAT_STARTERS,
+  getSoundProfile,
+  SCI_FI_SOUND_PROFILES,
   Project,
   SkillItem,
 } from './portfolioLogic';
@@ -344,4 +348,36 @@ test('calculateScrollProgress accurately computes percentage and clamps between 
   // Non-scrollable page (scrollHeight <= clientHeight)
   assert.equal(calculateScrollProgress(0, 800, 800), 0);
   assert.equal(calculateScrollProgress(0, 600, 800), 0);
+});
+
+test('createChatMessage creates valid multi-turn messages and starters are populated', () => {
+  const userMsg = createChatMessage('user', '  Hello JARVIS  ');
+  assert.equal(userMsg.role, 'user');
+  assert.equal(userMsg.content, 'Hello JARVIS');
+  assert.ok(userMsg.id.startsWith('msg_'));
+  assert.ok(userMsg.timestamp.length > 0);
+
+  const assistantMsg = createChatMessage('assistant', 'I am at your service, sir.');
+  assert.equal(assistantMsg.role, 'assistant');
+  assert.equal(assistantMsg.content, 'I am at your service, sir.');
+
+  assert.ok(JARVIS_CHAT_STARTERS.length >= 3);
+  assert.ok(JARVIS_CHAT_STARTERS.some((s) => s.toLowerCase().includes('arjun')));
+});
+
+test('getSoundProfile provides calibrated sci-fi parameters for hum, chimes, and blips', () => {
+  const lowHum = getSoundProfile('low_hum');
+  assert.equal(lowHum.name, 'low_hum');
+  assert.equal(lowHum.waveform, 'sine');
+  assert.ok(lowHum.frequencies.includes(55)); // sub-bass hum
+  assert.ok(lowHum.duration >= 1.0);
+
+  const receiveChime = getSoundProfile('receive_chime');
+  assert.equal(receiveChime.name, 'receive_chime');
+  assert.ok(receiveChime.frequencies.length >= 2);
+  assert.ok(receiveChime.initialGain > 0);
+
+  const sendBlip = getSoundProfile('send_blip');
+  assert.equal(sendBlip.name, 'send_blip');
+  assert.equal(sendBlip.waveform, 'triangle');
 });

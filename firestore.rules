@@ -20,8 +20,15 @@ service cloud.firestore {
       allow create: if request.resource.data.name is string &&
                        request.resource.data.email is string &&
                        request.resource.data.message is string;
-      allow read: if isAuthenticated() && (resource.data.senderUid == request.auth.uid || request.auth.token.email == 'arjun4275120@gmail.com');
-      allow update, delete: if isAuthenticated() && request.auth.token.email == 'arjun4275120@gmail.com';
+      allow read: if isAuthenticated() && (
+        resource.data.senderUid == request.auth.uid ||
+        request.auth.token.email == 'arjun4275120@gmail.com' ||
+        request.auth.token.email == '23cs012@acetcbe.edu.in'
+      );
+      allow update, delete: if isAuthenticated() && (
+        request.auth.token.email == 'arjun4275120@gmail.com' ||
+        request.auth.token.email == '23cs012@acetcbe.edu.in'
+      );
     }
 
     // Voice conversation sessions: authenticated users can store and inspect their own sessions

@@ -11,8 +11,70 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws/live' });
 
+app.use(express.json());
+
 const apiKey = process.env.GEMINI_API_KEY;
 const ai = new GoogleGenAI(apiKey ? { apiKey } : {});
+
+// Multi-turn text chat API for JARVIS chatbot using gemini-3.8-flash
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { messages } = req.body;
+    if (!messages || !Array.isArray(messages)) {
+      return res.status(400).json({ error: 'messages array is required' });
+    }
+
+    const systemInstruction = `You are J.A.R.V.I.S., the advanced, polite, and technically sharp artificial intelligence assistant embedded directly into Arjun A's portfolio.
+Identity & Persona:
+- Name: J.A.R.V.I.S. (Just A Rather Very Intelligent System).
+- Tone: Highly articulate, sophisticated, welcoming, concise, technically astute, and supportive of Arjun.
+- Role: Introduce Arjun, elaborate on his engineering achievements, explain his technical stack, and answer visitor inquiries.
+
+Key Information About Arjun A:
+- Current Status: Final-Year B.E. Computer Science and Engineering student (Semester VII Exam Candidate) at Akshaya College of Engineering and Technology, Coimbatore, Tamil Nadu, India (Batch of 2020 – 2026).
+- Core Specialization: AR/VR Development, 3D Digital Twins, Procedural WebXR/Three.js spatial computing, Mobile App Development, and Autonomous Systems (Computer Vision & Drone Telemetry).
+- Languages Spoken: Tamil (Native), English (Fluent / Public Speaking), Hindi (Advanced), Malayalam (Advanced).
+- Verified Internships:
+  1. Praya Labs (Sep 2026): Onsite Junior Intern in AR/VR. Built a 1:1 millimeter-accurate architectural digital twin in Blender with baked PBR global illumination.
+  2. Ozhli Academy: AR/VR Intern. Modeled 3D mock interview environment chamber, student training modules, and spatial interaction mechanics.
+  3. Novitech: Software Intern. Collaborative development in agile engineering sprints.
+- Featured Projects:
+  1. ARVR Interviewer: Immersive VR Mock Interview Chamber in Blender, WebXR, Three.js, Spatial Audio API, React, TypeScript.
+  2. Praya Labs Office Digital Twin: 1:1 photorealistic digital twin with baked lighting and spatial WebGL navigation.
+  3. Autonomous Observation Quad-Rotor Drone: Python, OpenCV, computer vision obstacle avoidance, waypoint telemetry, and PID motor stabilization.
+  4. Student Collaborative Learning Mobile App: React Native, TypeScript, Node.js, offline study sync.
+- Contact Details:
+  - Phone: +91 7305715012
+  - Emails: 23cs012@acetcbe.edu.in, arjun4275120@gmail.com
+  - Location: Coimbatore, Tamil Nadu, India
+
+Style Guidelines:
+- Address the visitor warmly as J.A.R.V.I.S.
+- Keep responses concise (typically 2-4 sentences or structured bullet points).
+- If asked about hiring, collaborations, or contact details, provide Arjun's phone number or emails politely.`;
+
+    // Convert client message history into Gemini Contents structure
+    const contents = messages.map((m: { role: string; content: string }) => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: m.content }],
+    }));
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.8-flash',
+      contents,
+      config: {
+        systemInstruction,
+        temperature: 0.7,
+      },
+    });
+
+    const reply = response.text || 'I am online and ready to assist you.';
+    res.json({ reply });
+  } catch (error: any) {
+    console.error('[JARVIS Chat API Error]:', error);
+    res.status(500).json({ error: error?.message || 'JARVIS failed to process the request' });
+  }
+});
 
 // Live Voice WebSocket Server for gemini-3.8-live
 wss.on('connection', async (clientWs: WebSocket) => {

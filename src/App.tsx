@@ -13,6 +13,7 @@ import { ResumeModal } from './components/ResumeModal';
 import { JarvisWelcomeOverlay } from './components/JarvisWelcomeOverlay';
 import { JarvisProjectBriefModal } from './components/JarvisProjectBriefModal';
 import { JarvisAboutModal } from './components/JarvisAboutModal';
+import { JarvisChatModal } from './components/JarvisChatModal';
 import { MobileInstallModal } from './components/MobileInstallModal';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { LiveVoiceModal } from './components/LiveVoiceModal';
@@ -28,6 +29,7 @@ export default function App() {
   const [jarvisBriefProject, setJarvisBriefProject] = useState<Project | null>(null);
   const [isResumeOpen, setIsResumeOpen] = useState(false);
   const [isJarvisAboutOpen, setIsJarvisAboutOpen] = useState(false);
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
   const [isLiveVoiceOpen, setIsLiveVoiceOpen] = useState(false);
   const [showJarvisWelcome, setShowJarvisWelcome] = useState(true);
@@ -101,6 +103,7 @@ export default function App() {
           onReplayJarvis={() => setShowJarvisWelcome(true)}
           onOpenInstall={() => setIsInstallModalOpen(true)}
           onOpenLiveVoice={() => setIsLiveVoiceOpen(true)}
+          onOpenChatbot={() => setIsChatbotOpen(true)}
           theme={theme}
           onToggleTheme={switchTheme}
         />
@@ -113,6 +116,7 @@ export default function App() {
               onExploreProjects={handleScrollToProjects}
               onOpenJarvisAbout={() => setIsJarvisAboutOpen(true)}
               onOpenLiveVoice={() => setIsLiveVoiceOpen(true)}
+              onOpenChatbot={() => setIsChatbotOpen(true)}
             />
           </RevealSection>
 
@@ -181,6 +185,13 @@ export default function App() {
         onOpenResume={() => setIsResumeOpen(true)}
       />
 
+      {/* J.A.R.V.I.S. Multi-Turn AI Chatbot Modal (gemini-3.8-flash) */}
+      <JarvisChatModal
+        isOpen={isChatbotOpen}
+        onClose={() => setIsChatbotOpen(false)}
+        onOpenLiveVoice={() => setIsLiveVoiceOpen(true)}
+      />
+
       {/* Gemini-3.8-Live Real-Time Voice Conversation Modal */}
       <LiveVoiceModal
         isOpen={isLiveVoiceOpen}
@@ -204,6 +215,7 @@ export default function App() {
         onOpenJarvis={() => setIsJarvisAboutOpen(true)}
         onOpenInstall={() => setIsInstallModalOpen(true)}
         onOpenLiveVoice={() => setIsLiveVoiceOpen(true)}
+        onOpenChatbot={() => setIsChatbotOpen(true)}
       />
       </div>
     </div>

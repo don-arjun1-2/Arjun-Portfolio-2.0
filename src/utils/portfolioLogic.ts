@@ -399,5 +399,82 @@ export function calculateScrollProgress(
   return Math.min(100, Math.max(0, Math.round(progress * 10) / 10));
 }
 
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: string;
+}
+
+export const JARVIS_CHAT_STARTERS = [
+  'What are Arjun\'s core skills in AR/VR and Blender?',
+  'Tell me about Arjun\'s 1:1 Praya Labs digital twin.',
+  'How does Arjun\'s ARVR Interviewer chamber work?',
+  'What is Arjun\'s current academic standing and college?',
+];
+
+export function createChatMessage(role: 'user' | 'assistant', content: string): ChatMessage {
+  return {
+    id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+    role,
+    content: content.trim(),
+    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  };
+}
+
+export type SciFiSoundType = 'low_hum' | 'boot_chime' | 'send_blip' | 'receive_chime' | 'system_alert';
+
+export interface SoundProfile {
+  name: SciFiSoundType;
+  frequencies: number[];
+  waveform: OscillatorType;
+  duration: number;
+  initialGain: number;
+}
+
+export const SCI_FI_SOUND_PROFILES: Record<SciFiSoundType, SoundProfile> = {
+  low_hum: {
+    name: 'low_hum',
+    frequencies: [55, 110], // Sub-bass 55Hz (A1) resonance
+    waveform: 'sine',
+    duration: 1.8,
+    initialGain: 0.05,
+  },
+  boot_chime: {
+    name: 'boot_chime',
+    frequencies: [587.33, 880, 1174.66], // D5 -> A5 -> D6 futuristic chord
+    waveform: 'sine',
+    duration: 0.35,
+    initialGain: 0.04,
+  },
+  send_blip: {
+    name: 'send_blip',
+    frequencies: [440, 659.25], // Crisp transmission ping (A4 -> E5)
+    waveform: 'triangle',
+    duration: 0.12,
+    initialGain: 0.03,
+  },
+  receive_chime: {
+    name: 'receive_chime',
+    frequencies: [523.25, 783.99, 1046.5], // Harmonic telemetry arrival (C5 -> G5 -> C6)
+    waveform: 'sine',
+    duration: 0.28,
+    initialGain: 0.035,
+  },
+  system_alert: {
+    name: 'system_alert',
+    frequencies: [330, 220],
+    waveform: 'sawtooth',
+    duration: 0.25,
+    initialGain: 0.02,
+  },
+};
+
+export function getSoundProfile(sound: SciFiSoundType): SoundProfile {
+  return SCI_FI_SOUND_PROFILES[sound];
+}
+
+
+
 
 

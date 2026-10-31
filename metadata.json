@@ -1,6 +1,9 @@
 {
   "name": "Arjun A — AR/VR Developer & CSE Portfolio",
   "description": "Portfolio of Arjun A, Final-Year Computer Science Engineering student specializing in AR/VR development, 3D digital twins, mobile applications, and interactive platforms.",
-  "requestFramePermissions": [],
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

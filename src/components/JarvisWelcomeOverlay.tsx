@@ -23,6 +23,56 @@ export function JarvisWelcomeOverlay({ onComplete }: JarvisWelcomeOverlayProps) 
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isExiting, setIsExiting] = useState(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
+  const humOscRef = useRef<OscillatorNode | null>(null);
+  const humGainRef = useRef<GainNode | null>(null);
+
+  // Play continuous low-frequency sci-fi background hum
+  const startLowFrequencyHum = () => {
+    if (!isAudioEnabled) return;
+    try {
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!audioCtxRef.current) {
+        audioCtxRef.current = new AudioCtx();
+      }
+      const ctx = audioCtxRef.current;
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+
+      // Create subtle dual-sub-frequency hum (55Hz base + 110Hz harmonic)
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(55, ctx.currentTime); // 55 Hz sub-bass
+      gain.gain.setValueAtTime(0.001, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.025, ctx.currentTime + 0.8);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+
+      humOscRef.current = osc;
+      humGainRef.current = gain;
+    } catch {
+      // Audio autoplay policy fallback
+    }
+  };
+
+  const stopLowFrequencyHum = () => {
+    try {
+      if (humGainRef.current && audioCtxRef.current) {
+        humGainRef.current.gain.linearRampToValueAtTime(0.0001, audioCtxRef.current.currentTime + 0.4);
+        setTimeout(() => {
+          humOscRef.current?.stop();
+          humOscRef.current?.disconnect();
+          humOscRef.current = null;
+        }, 400);
+      }
+    } catch {
+      // fallback
+    }
+  };
 
   // Synthesize soft, futuristic JARVIS sci-fi chimes using Web Audio API
   const playSciFiTone = (freq: number, type: OscillatorType = 'sine', duration = 0.15) => {
@@ -56,6 +106,9 @@ export function JarvisWelcomeOverlay({ onComplete }: JarvisWelcomeOverlayProps) 
 
   // Step progression sequence
   useEffect(() => {
+    // Start ambient low-frequency reactor hum
+    startLowFrequencyHum();
+
     // Play initial boot chime
     playSciFiTone(587.33, 'sine', 0.2); // D5
     setTimeout(() => playSciFiTone(880, 'sine', 0.25), 120); // A5
@@ -107,6 +160,7 @@ export function JarvisWelcomeOverlay({ onComplete }: JarvisWelcomeOverlayProps) 
       clearTimeout(t3);
       clearTimeout(t4);
       window.removeEventListener('keydown', handleKeyDown);
+      stopLowFrequencyHum();
       if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
         audioCtxRef.current.close().catch(() => {});
       }
@@ -114,6 +168,7 @@ export function JarvisWelcomeOverlay({ onComplete }: JarvisWelcomeOverlayProps) 
   }, []);
 
   const handleDismiss = () => {
+    stopLowFrequencyHum();
     setIsExiting(true);
     setTimeout(() => {
       onComplete();

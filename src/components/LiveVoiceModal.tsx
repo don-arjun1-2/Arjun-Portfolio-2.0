@@ -67,7 +67,20 @@ export function LiveVoiceModal({ isOpen, onClose }: LiveVoiceModalProps) {
 
       ws.onopen = async () => {
         console.log('[Live Voice] Connected to Live API WebSocket');
-        await setupMicrophone(ws);
+        try {
+          await setupMicrophone(ws);
+        } catch (micErr: any) {
+          console.error('[Live Voice] Microphone setup failed:', micErr);
+          setStatus('error');
+          if (micErr?.name === 'NotAllowedError' || micErr?.name === 'PermissionDeniedError') {
+            setErrorMessage(
+              'Microphone permission was not granted. Please allow microphone access in your browser address bar to speak with J.A.R.V.I.S., or use J.A.R.V.I.S. text chat.'
+            );
+          } else {
+            setErrorMessage(micErr?.message || 'Unable to access microphone audio stream.');
+          }
+          ws.close();
+        }
       };
 
       ws.onmessage = async (event) => {

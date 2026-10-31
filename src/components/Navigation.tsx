@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, FileText, Send, Zap, Smartphone, Download, Mic, LogIn, LogOut, User as UserIcon, Sun, Moon } from 'lucide-react';
+import { Menu, X, FileText, Send, Zap, Smartphone, Download, Mic, LogIn, LogOut, User as UserIcon, Sun, Moon, Bot, MessageSquare } from 'lucide-react';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 import { useAuth } from '../hooks/useAuth';
 import { ThemeMode } from '../utils/portfolioLogic';
@@ -10,6 +10,7 @@ interface NavigationProps {
   onReplayJarvis?: () => void;
   onOpenInstall?: () => void;
   onOpenLiveVoice?: () => void;
+  onOpenChatbot?: () => void;
   theme?: ThemeMode;
   onToggleTheme?: () => void;
 }
@@ -20,6 +21,7 @@ export function Navigation({
   onReplayJarvis,
   onOpenInstall,
   onOpenLiveVoice,
+  onOpenChatbot,
   theme = 'dark',
   onToggleTheme,
 }: NavigationProps) {
@@ -79,6 +81,18 @@ export function Navigation({
 
         {/* Zone 3: Actions */}
         <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+          {onOpenChatbot && (
+            <button
+              type="button"
+              onClick={onOpenChatbot}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-bold text-cyan-300 hover:text-white bg-cyan-950/70 hover:bg-cyan-900/90 border border-cyan-500/50 rounded-lg transition-all shadow-[0_0_12px_rgba(6,182,212,0.3)] active:scale-95"
+              title="Open J.A.R.V.I.S. AI Chatbot"
+            >
+              <Bot className="w-3.5 h-3.5 text-cyan-400" />
+              <span>J.A.R.V.I.S. Chat</span>
+            </button>
+          )}
+
           {onOpenLiveVoice && (
             <button
               type="button"
@@ -87,7 +101,7 @@ export function Navigation({
               title="Start real-time voice conversation with gemini-3.8-live"
             >
               <Mic className="w-3.5 h-3.5 fill-neutral-950 animate-pulse" />
-              <span>Live Voice</span>
+              <span className="hidden sm:inline">Live Voice</span>
             </button>
           )}
 
@@ -223,6 +237,20 @@ export function Navigation({
           >
             Education & Awards
           </a>
+
+          {onOpenChatbot && (
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenChatbot();
+              }}
+              className="flex items-center gap-2 py-2 px-3 rounded-lg bg-cyan-950/70 border border-cyan-500/50 text-cyan-300 text-xs font-mono font-bold"
+            >
+              <Bot className="w-4 h-4 text-cyan-400" />
+              <span>Chat with J.A.R.V.I.S. (gemini-3.8-flash)</span>
+            </button>
+          )}
 
           {onOpenLiveVoice && (
             <button
