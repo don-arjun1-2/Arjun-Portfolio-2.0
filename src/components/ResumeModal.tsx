@@ -185,7 +185,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   <div className="p-4 rounded-xl bg-neutral-900/50 border border-neutral-800">
                     <div className="font-bold text-white mb-1">B.E. Computer Science & Engineering</div>
                     <div className="text-neutral-400">Akshaya College of Eng & Tech, Coimbatore</div>
-                    <div className="text-neutral-500 font-mono mt-1">2020 – Present</div>
+                    <div className="text-neutral-500 font-mono mt-1">2020 – Present (Final Year · VII Sem Exam Candidate)</div>
                   </div>
                   <div className="p-4 rounded-xl bg-neutral-900/50 border border-neutral-800">
                     <div className="font-bold text-white mb-1">Internship Completion Certificate</div>

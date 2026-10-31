@@ -23,7 +23,7 @@ export function Hero({ onOpenResume, onExploreProjects, onOpenJarvisAbout, onOpe
           <span aria-hidden="true" className="text-cyan-700">·</span>
           <span>STATUS: ONLINE</span>
           <span aria-hidden="true" className="text-cyan-700">·</span>
-          <span className="text-neutral-300">B.E. COMPUTER SCIENCE 2026</span>
+          <span className="text-neutral-300">B.E. CSE · FINAL YEAR (VII SEM EXAMS)</span>
         </div>
 
         {/* Dominant Headline */}
@@ -36,9 +36,7 @@ export function Hero({ onOpenResume, onExploreProjects, onOpenJarvisAbout, onOpe
 
         {/* Lead Copy */}
         <p className="text-base sm:text-lg text-neutral-300 leading-relaxed font-normal max-w-3xl mb-6">
-          Final-year Computer Science Engineering student at Akshaya College of Engineering and Technology, Coimbatore.
-          Transforming complex spatial concepts into intuitive, user-friendly solutions across AR/VR pipelines,
-          real-time Blender environments, and mobile platforms.
+          Final-year Computer Science Engineering student (Semester VII) at Akshaya College of Engineering and Technology, Coimbatore, appearing for VII Semester examinations. Transforming complex spatial concepts into intuitive, user-friendly solutions across AR/VR pipelines, real-time Blender environments, and mobile platforms.
         </p>
 
         {/* Trust Markers */}

@@ -13,6 +13,11 @@ import {
   getJarvisProjectBrief,
   getJarvisAboutBrief,
   getInstallPlatformDetails,
+  getRevealTransitionClasses,
+  getInitialTheme,
+  toggleTheme,
+  THEME_STORAGE_KEY,
+  calculateScrollProgress,
   Project,
   SkillItem,
 } from './portfolioLogic';
@@ -104,6 +109,23 @@ test('filterProjects filters accurately by category', () => {
 
   const emptyCategory = filterProjects(sampleProjects, '');
   assert.equal(emptyCategory.length, 3);
+
+  // Filter by technology tag
+  const blenderProjects = filterProjects(sampleProjects, 'all', 'Blender');
+  assert.equal(blenderProjects.length, 1);
+  assert.equal(blenderProjects[0].id, 'p1');
+
+  const tsProjects = filterProjects(sampleProjects, 'all', 'TypeScript');
+  assert.equal(tsProjects.length, 1);
+  assert.equal(tsProjects[0].id, 'p3');
+
+  // Filter by both category and technology tag
+  const aiPython = filterProjects(sampleProjects, 'ai', 'Python');
+  assert.equal(aiPython.length, 1);
+  assert.equal(aiPython[0].id, 'p2');
+
+  const aiBlender = filterProjects(sampleProjects, 'ai', 'Blender');
+  assert.equal(aiBlender.length, 0);
 });
 
 test('filterSkills filters accurately by core_domains, design_tools, programming, and all', () => {
@@ -234,9 +256,11 @@ test('getJarvisProjectBrief provides custom voice narration for every project', 
 test('getJarvisAboutBrief provides comprehensive vocal bio and telemetry for Arjun', () => {
   const bio = getJarvisAboutBrief();
   assert.equal(bio.identity, 'Arjun A');
-  assert.equal(bio.graduationYear, '2026');
+  assert.ok(bio.graduationYear.includes('2026'));
+  assert.ok(bio.graduationYear.includes('VII Sem'));
   assert.ok(bio.institution.includes('Akshaya'));
   assert.ok(bio.voiceScript.includes('Allow me to introduce Arjun'));
+  assert.ok(bio.voiceScript.includes('VII Semester examinations'));
   assert.ok(bio.voiceScript.includes('Praya Labs'));
   assert.ok(bio.coreHighlights.length >= 4);
   assert.ok(bio.systemTelemetry.length >= 4);
@@ -261,4 +285,63 @@ test('getInstallPlatformDetails detects iOS, Android, and Desktop environments a
   const desktopDetails = getInstallPlatformDetails(desktopUa);
   assert.equal(desktopDetails.isMobile, false);
   assert.equal(desktopDetails.platformName, 'Desktop');
+});
+
+test('getRevealTransitionClasses handles isVisible states and directions properly', () => {
+  // When visible
+  const visibleUp = getRevealTransitionClasses(true, 'up');
+  assert.equal(visibleUp, 'opacity-100 translate-y-0 translate-x-0 scale-100');
+
+  const visibleLeft = getRevealTransitionClasses(true, 'left');
+  assert.equal(visibleLeft, 'opacity-100 translate-y-0 translate-x-0 scale-100');
+
+  // When not visible
+  const hiddenUp = getRevealTransitionClasses(false, 'up');
+  assert.ok(hiddenUp.includes('opacity-0') && hiddenUp.includes('translate-y-10'));
+
+  const hiddenDown = getRevealTransitionClasses(false, 'down');
+  assert.ok(hiddenDown.includes('opacity-0') && hiddenDown.includes('-translate-y-10'));
+
+  const hiddenLeft = getRevealTransitionClasses(false, 'left');
+  assert.ok(hiddenLeft.includes('opacity-0') && hiddenLeft.includes('translate-x-10'));
+
+  const hiddenRight = getRevealTransitionClasses(false, 'right');
+  assert.ok(hiddenRight.includes('opacity-0') && hiddenRight.includes('-translate-x-10'));
+
+  const hiddenNone = getRevealTransitionClasses(false, 'none');
+  assert.equal(hiddenNone, 'opacity-0');
+});
+
+test('theme helper functions manage light/dark modes correctly', () => {
+  assert.equal(THEME_STORAGE_KEY, 'arjun_portfolio_theme');
+
+  // getInitialTheme returns saved preference or defaults to dark
+  assert.equal(getInitialTheme('light'), 'light');
+  assert.equal(getInitialTheme('dark'), 'dark');
+  assert.equal(getInitialTheme(null), 'dark');
+  assert.equal(getInitialTheme(undefined), 'dark');
+  assert.equal(getInitialTheme('invalid-theme'), 'dark');
+
+  // toggleTheme switches between light and dark
+  assert.equal(toggleTheme('dark'), 'light');
+  assert.equal(toggleTheme('light'), 'dark');
+});
+
+test('calculateScrollProgress accurately computes percentage and clamps between 0 and 100', () => {
+  // At the very top
+  assert.equal(calculateScrollProgress(0, 2000, 1000), 0);
+
+  // Midway
+  assert.equal(calculateScrollProgress(500, 2000, 1000), 50);
+
+  // At the very bottom
+  assert.equal(calculateScrollProgress(1000, 2000, 1000), 100);
+
+  // Clamping over-scroll (e.g. rubber banding)
+  assert.equal(calculateScrollProgress(1200, 2000, 1000), 100);
+  assert.equal(calculateScrollProgress(-50, 2000, 1000), 0);
+
+  // Non-scrollable page (scrollHeight <= clientHeight)
+  assert.equal(calculateScrollProgress(0, 800, 800), 0);
+  assert.equal(calculateScrollProgress(0, 600, 800), 0);
 });

@@ -47,11 +47,25 @@ export interface SkillItem {
   iconName?: string;
 }
 
-export function filterProjects(projects: Project[], category: string): Project[] {
-  if (!category || category === 'all') {
-    return projects;
+export function filterProjects(
+  projects: Project[],
+  category: string,
+  selectedTech: string | null = null
+): Project[] {
+  let result = projects;
+
+  if (category && category !== 'all') {
+    result = result.filter((p) => p.category === category);
   }
-  return projects.filter((p) => p.category === category);
+
+  if (selectedTech && selectedTech.trim() !== '') {
+    const targetTech = selectedTech.trim().toLowerCase();
+    result = result.filter((p) =>
+      p.techStack.some((t) => t.toLowerCase() === targetTech)
+    );
+  }
+
+  return result;
 }
 
 export function filterSkills(skills: SkillItem[], category: string): SkillItem[] {
@@ -273,16 +287,18 @@ export const JARVIS_ABOUT_BRIEF: JarvisAboutBrief = {
   status: 'ONLINE · FOCUSED',
   location: 'Coimbatore, Tamil Nadu, India',
   institution: 'Akshaya College of Engineering and Technology',
-  graduationYear: '2026',
+  graduationYear: '2026 (Final Year · VII Sem Exam Candidate)',
   voiceScript:
-    'Allow me to introduce Arjun. Arjun is a final-year Computer Science Engineering student at Akshaya College of Engineering and Technology in Coimbatore, graduating in 2026. He specializes in AR and VR development, photorealistic 3D digital twins modeled in Blender, and autonomous systems with computer vision. With verified industry internships delivering millimeter-accurate digital twins at Praya Labs and interactive VR chambers at Ozhli Academy, Arjun bridges spatial computing, software engineering, and hardware telemetry into intuitive real-world solutions.',
+    'Allow me to introduce Arjun. Arjun is a final-year Computer Science Engineering student at Akshaya College of Engineering and Technology in Coimbatore, currently preparing for his VII Semester examinations. He specializes in AR and VR development, photorealistic 3D digital twins modeled in Blender, and autonomous systems with computer vision. With verified industry internships delivering millimeter-accurate digital twins at Praya Labs and interactive VR chambers at Ozhli Academy, Arjun bridges spatial computing, software engineering, and hardware telemetry into intuitive real-world solutions.',
   coreHighlights: [
+    'Final Year B.E. CSE (VII Semester Exam Candidate)',
     'AR/VR Development & WebXR Shaders',
     '1:1 Scale Photorealistic Digital Twins',
     'Autonomous Drone Vision (Python/OpenCV)',
     'Verified Industry Internships (Praya Labs, Novitech, Ozhli)',
   ],
   systemTelemetry: [
+    { label: 'ACADEMIC STANDING', value: 'Final Year · Semester VII Exam Candidate' },
     { label: 'DISCIPLINE', value: 'B.E. Computer Science & Engineering' },
     { label: 'SPECIALIZATION', value: 'Spatial Computing & 3D Interactive Web' },
     { label: 'COGNITIVE FOCUS', value: 'Blender 4.x, Three.js, WebXR, TypeScript' },
@@ -331,4 +347,57 @@ export function getInstallPlatformDetails(userAgent: string): MobilePlatformDeta
     installInstruction: 'Click the install icon in your browser address bar to install.',
   };
 }
+
+export type RevealDirection = 'up' | 'down' | 'left' | 'right' | 'none';
+
+export function getRevealTransitionClasses(isVisible: boolean, direction: RevealDirection = 'up'): string {
+  if (isVisible) {
+    return 'opacity-100 translate-y-0 translate-x-0 scale-100';
+  }
+
+  switch (direction) {
+    case 'up':
+      return 'opacity-0 translate-y-10 scale-[0.98]';
+    case 'down':
+      return 'opacity-0 -translate-y-10 scale-[0.98]';
+    case 'left':
+      return 'opacity-0 translate-x-10 scale-[0.98]';
+    case 'right':
+      return 'opacity-0 -translate-x-10 scale-[0.98]';
+    case 'none':
+    default:
+      return 'opacity-0';
+  }
+}
+
+export type ThemeMode = 'dark' | 'light';
+
+export const THEME_STORAGE_KEY = 'arjun_portfolio_theme';
+
+export function getInitialTheme(savedTheme?: string | null): ThemeMode {
+  if (savedTheme === 'light' || savedTheme === 'dark') {
+    return savedTheme;
+  }
+  return 'dark'; // Cyber HUD dark mode by default
+}
+
+export function toggleTheme(current: ThemeMode): ThemeMode {
+  return current === 'dark' ? 'light' : 'dark';
+}
+
+/**
+ * Calculates scroll progression percentage (0 to 100) based on scroll position and scrollable height.
+ */
+export function calculateScrollProgress(
+  scrollTop: number,
+  scrollHeight: number,
+  clientHeight: number
+): number {
+  const maxScroll = scrollHeight - clientHeight;
+  if (maxScroll <= 0) return 0;
+  const progress = (scrollTop / maxScroll) * 100;
+  return Math.min(100, Math.max(0, Math.round(progress * 10) / 10));
+}
+
+
 

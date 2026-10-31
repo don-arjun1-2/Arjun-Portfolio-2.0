@@ -16,9 +16,9 @@ export interface LanguageFluency {
 export const PORTFOLIO_DATA = {
   personal: {
     name: 'Arjun A',
-    title: 'Final-Year Computer Science Engineering Student & AR/VR Developer',
+    title: 'Final-Year Computer Science Engineering Student (VII Sem) & AR/VR Developer',
     headline: 'Engineering Immersive Realities, 3D Digital Twins & Spatial Systems',
-    bio: 'I am a motivated, tech-savvy final-year B.E. Computer Science and Engineering student at Akshaya College of Engineering and Technology with a strong foundation in programming and immersive computing. Passionate about turning complex ideas into intuitive, user-friendly solutions, I specialize in AR/VR development, 3D digital twins, mobile application development, and interactive platforms.',
+    bio: 'I am a motivated, tech-savvy final-year B.E. Computer Science and Engineering student (Semester VII) at Akshaya College of Engineering and Technology, currently preparing for the VII Semester examinations. With a strong foundation in programming and immersive computing, I specialize in AR/VR development, 3D digital twins, mobile application development, and interactive platforms.',
     location: 'Coimbatore, Tamil Nadu, India',
     college: 'Akshaya College of Engineering and Technology',
     universityLocation: 'Coimbatore, Tamil Nadu',
@@ -31,13 +31,13 @@ export const PORTFOLIO_DATA = {
     github: 'https://github.com',
     resumePdfUrl: '/assets/aistudio/Arjun_resume_updated_c55ea4c5.pdf',
     batch: 'Batch of 2020 – 2026',
-    degree: 'B.E. Computer Science & Engineering',
+    degree: 'B.E. Computer Science & Engineering (Final Year · VII Sem)',
   },
   stats: [
     { label: 'Industry Internships', value: '3', detail: 'Praya Labs, Ozhli Academy, Novitech' },
     { label: 'Digital Twin Scale', value: '1:1', detail: 'Blender office replication' },
     { label: 'Languages Spoken', value: '4', detail: 'Tamil, English, Hindi, Malayalam' },
-    { label: 'Academic Standing', value: 'Final-Year', detail: 'Akshaya College of Eng & Tech' },
+    { label: 'Academic Standing', value: 'Final-Year (VII Sem)', detail: 'Appearing for VII Sem Exams · Akshaya College of Eng & Tech' },
   ],
   projects: [
     {
@@ -392,8 +392,9 @@ export const PORTFOLIO_DATA = {
       degree: 'Bachelor of Engineering (B.E.) — Computer Science & Engineering',
       institution: 'Akshaya College of Engineering and Technology',
       location: 'Coimbatore, Tamil Nadu',
-      period: '08/2020 – Present (Final Year)',
+      period: '08/2020 – Present (Final Year · VII Sem Exam Candidate)',
       highlights: [
+        'Currently in Final Year, preparing to appear for VII Semester university examinations.',
         'Specializing in AR/VR spatial simulation, 3D computer graphics, and distributed application development.',
         'Active leader in campus technical projects, tech talks, and science club activities.',
       ],

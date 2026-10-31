@@ -12,8 +12,9 @@ interface ProjectsSectionProps {
 
 export function ProjectsSection({ onSelectProject, onInspect3D, onJarvisBrief }: ProjectsSectionProps) {
   const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [selectedTech, setSelectedTech] = useState<string | null>(null);
   const allProjects = PORTFOLIO_DATA.projects;
-  const filteredProjects = filterProjects(allProjects, activeCategory);
+  const filteredProjects = filterProjects(allProjects, activeCategory, selectedTech);
 
   const categories = [
     { id: 'all', label: 'All Projects' },
@@ -23,10 +24,18 @@ export function ProjectsSection({ onSelectProject, onInspect3D, onJarvisBrief }:
     { id: 'mobile', label: 'Mobile Apps' },
   ];
 
+  const handleTechClick = (tech: string) => {
+    if (selectedTech?.toLowerCase() === tech.toLowerCase()) {
+      setSelectedTech(null); // toggle off
+    } else {
+      setSelectedTech(tech);
+    }
+  };
+
   return (
     <section id="projects" className="py-16 px-6 max-w-7xl mx-auto border-t border-neutral-900">
       {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
         <div>
           <div className="text-xs font-semibold uppercase tracking-wider text-indigo-400 mb-2">
             ENGINEERED SYSTEMS & PROTOTYPES
@@ -58,6 +67,29 @@ export function ProjectsSection({ onSelectProject, onInspect3D, onJarvisBrief }:
         </div>
       </div>
 
+      {/* Active Technology Filter Tag Indicator Bar */}
+      {selectedTech && (
+        <div className="flex items-center justify-between gap-3 p-3 mb-8 rounded-xl bg-cyan-950/40 border border-cyan-500/40 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-cyan-400 uppercase font-semibold">Filtering by Technology:</span>
+            <span className="px-2.5 py-1 rounded-md bg-cyan-400 text-neutral-950 font-mono font-bold shadow-[0_0_10px_rgba(6,182,212,0.5)]">
+              {selectedTech}
+            </span>
+            <span className="text-neutral-400 hidden sm:inline">
+              ({filteredProjects.length} {filteredProjects.length === 1 ? 'project matches' : 'projects match'})
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setSelectedTech(null)}
+            className="px-3 py-1 text-xs font-mono font-medium rounded-lg bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-cyan-300 hover:text-white transition-colors"
+          >
+            Clear Tech Filter ✕
+          </button>
+        </div>
+      )}
+
       {/* Dynamic Bento Box Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProjects.map((project, index) => {
@@ -73,10 +105,16 @@ export function ProjectsSection({ onSelectProject, onInspect3D, onJarvisBrief }:
                   onSelectProject(project);
                 }
               }}
-              className={`group cursor-pointer flex flex-col justify-between p-6 sm:p-7 rounded-2xl bg-neutral-900/70 border border-neutral-800/80 hover:border-cyan-500/50 hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] transition-all duration-200 ${
+              className={`group relative overflow-hidden cursor-pointer flex flex-col justify-between p-6 sm:p-7 rounded-2xl bg-neutral-900/75 dark:bg-neutral-900/75 light:bg-white/90 border border-neutral-800/80 dark:border-neutral-800/80 light:border-slate-200 hover:border-cyan-400/70 hover:shadow-[0_0_35px_rgba(6,182,212,0.35),0_0_15px_rgba(99,102,241,0.25)] hover:-translate-y-1 transition-all duration-300 ${
                 isWide ? 'md:col-span-2' : 'col-span-1'
               }`}
             >
+              {/* Subtle Holographic Neon Top Edge Glow Accent */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none shadow-[0_0_10px_#22d3ee]" />
+
+              {/* Ambient Radial Hover Backlight Glow */}
+              <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full bg-cyan-500/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
               <div>
                 {/* Unboxed Metadata Header */}
                 <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-neutral-400 mb-3">
@@ -91,7 +129,7 @@ export function ProjectsSection({ onSelectProject, onInspect3D, onJarvisBrief }:
                 </div>
 
                 {/* Project Title */}
-                <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white mb-2 group-hover:text-indigo-300 transition-colors">
+                <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white mb-2 group-hover:text-cyan-300 transition-colors duration-200">
                   {project.title}
                 </h3>
 
@@ -117,16 +155,30 @@ export function ProjectsSection({ onSelectProject, onInspect3D, onJarvisBrief }:
               </div>
 
               <div>
-                {/* Tech Stack Unboxed Tags */}
+                {/* Tech Stack Clickable Filter Tags */}
                 <div className="flex flex-wrap gap-1.5 mb-5 pt-3 border-t border-neutral-800/60">
-                  {project.techStack.map((tech, i) => (
-                    <span
-                      key={i}
-                      className="text-[11px] font-mono px-2 py-0.5 rounded bg-neutral-950 border border-neutral-800 text-neutral-300"
-                    >
-                      {tech}
-                    </span>
-                  ))}
+                  {project.techStack.map((tech, i) => {
+                    const isSelected = selectedTech?.toLowerCase() === tech.toLowerCase();
+                    return (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTechClick(tech);
+                        }}
+                        className={`text-[11px] font-mono px-2 py-0.5 rounded transition-all duration-150 cursor-pointer ${
+                          isSelected
+                            ? 'bg-cyan-400 text-neutral-950 font-bold border border-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.6)] scale-105'
+                            : 'bg-neutral-950 hover:bg-neutral-800 border border-neutral-800 hover:border-cyan-500/60 text-neutral-300 hover:text-cyan-200'
+                        }`}
+                        title={`Filter gallery by ${tech}`}
+                        aria-pressed={isSelected}
+                      >
+                        {tech}
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {/* Action Buttons */}
@@ -180,6 +232,23 @@ export function ProjectsSection({ onSelectProject, onInspect3D, onJarvisBrief }:
           );
         })}
       </div>
+
+      {/* Empty State for zero matches */}
+      {filteredProjects.length === 0 && (
+        <div className="text-center py-12 px-6 rounded-2xl bg-neutral-900/40 border border-neutral-800 text-neutral-400">
+          <p className="text-sm font-mono mb-3">No projects match the selected criteria.</p>
+          <button
+            type="button"
+            onClick={() => {
+              setActiveCategory('all');
+              setSelectedTech(null);
+            }}
+            className="px-4 py-2 text-xs font-semibold rounded-xl bg-cyan-400 hover:bg-cyan-300 text-neutral-950 transition-all shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+          >
+            Reset All Filters
+          </button>
+        </div>
+      )}
     </section>
   );
 }

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Menu, X, FileText, Send, Zap, Smartphone, Download, Mic, LogIn, LogOut, User as UserIcon } from 'lucide-react';
+import { Menu, X, FileText, Send, Zap, Smartphone, Download, Mic, LogIn, LogOut, User as UserIcon, Sun, Moon } from 'lucide-react';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 import { useAuth } from '../hooks/useAuth';
+import { ThemeMode } from '../utils/portfolioLogic';
 
 interface NavigationProps {
   onOpenResume: () => void;
@@ -9,6 +10,8 @@ interface NavigationProps {
   onReplayJarvis?: () => void;
   onOpenInstall?: () => void;
   onOpenLiveVoice?: () => void;
+  theme?: ThemeMode;
+  onToggleTheme?: () => void;
 }
 
 export function Navigation({
@@ -17,56 +20,58 @@ export function Navigation({
   onReplayJarvis,
   onOpenInstall,
   onOpenLiveVoice,
+  theme = 'dark',
+  onToggleTheme,
 }: NavigationProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, profile, signInWithGoogle, signOut } = useAuth();
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-neutral-950/90 border-b border-neutral-800 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full bg-neutral-950/90 dark:bg-neutral-950/90 light:bg-white/90 border-b border-neutral-800 dark:border-neutral-800 light:border-slate-200 backdrop-blur-md transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-8">
         {/* Zone 1: Single text element wordmark */}
         <a
           href="#home"
-          className="text-lg font-bold tracking-tight text-white hover:text-indigo-400 transition-colors whitespace-nowrap shrink-0"
+          className="text-lg font-bold tracking-tight text-white dark:text-white light:text-slate-900 hover:text-cyan-400 transition-colors whitespace-nowrap shrink-0"
         >
           {PORTFOLIO_DATA.personal.name}
-          <span className="text-neutral-500 font-normal text-sm ml-2 hidden sm:inline">
+          <span className="text-neutral-500 dark:text-neutral-500 light:text-slate-500 font-normal text-sm ml-2 hidden sm:inline">
             · AR/VR Developer
           </span>
         </a>
 
         {/* Zone 2: 4-5 clean single-line text navigation links */}
         <nav
-          className="hidden md:flex items-center gap-7 text-sm font-medium text-neutral-300"
+          className="hidden md:flex items-center gap-7 text-sm font-medium text-neutral-300 dark:text-neutral-300 light:text-slate-700"
           aria-label="Main navigation"
         >
           <a
             href="#projects"
-            className="hover:text-white transition-colors whitespace-nowrap shrink-0"
+            className="hover:text-white dark:hover:text-white light:hover:text-cyan-600 transition-colors whitespace-nowrap shrink-0"
           >
             Projects
           </a>
           <a
             href="#spatial-lab"
-            className="hover:text-white transition-colors whitespace-nowrap shrink-0"
+            className="hover:text-white dark:hover:text-white light:hover:text-cyan-600 transition-colors whitespace-nowrap shrink-0"
           >
             3D Spatial Lab
           </a>
           <a
             href="#experience"
-            className="hover:text-white transition-colors whitespace-nowrap shrink-0"
+            className="hover:text-white dark:hover:text-white light:hover:text-cyan-600 transition-colors whitespace-nowrap shrink-0"
           >
             Experience
           </a>
           <a
             href="#skills"
-            className="hover:text-white transition-colors whitespace-nowrap shrink-0"
+            className="hover:text-white dark:hover:text-white light:hover:text-cyan-600 transition-colors whitespace-nowrap shrink-0"
           >
             Skills
           </a>
           <a
             href="#education"
-            className="hover:text-white transition-colors whitespace-nowrap shrink-0"
+            className="hover:text-white dark:hover:text-white light:hover:text-cyan-600 transition-colors whitespace-nowrap shrink-0"
           >
             Education
           </a>
@@ -151,6 +156,23 @@ export function Navigation({
             <span>Contact</span>
           </button>
 
+          {/* Theme Toggle Button (Dark vs Cyber-Light Mode) */}
+          {onToggleTheme && (
+            <button
+              type="button"
+              onClick={onToggleTheme}
+              className="inline-flex items-center justify-center p-2 rounded-lg bg-neutral-900/90 dark:bg-neutral-900/90 light:bg-slate-100 hover:bg-neutral-800 dark:hover:bg-neutral-800 light:hover:bg-slate-200 border border-neutral-700/80 dark:border-neutral-700/80 light:border-slate-300 text-cyan-400 dark:text-cyan-300 light:text-cyan-700 transition-all shadow-sm active:scale-95 cursor-pointer"
+              title={`Switch to ${theme === 'dark' ? 'Cyber-Light' : 'Cyber-Dark'} mode`}
+              aria-label={`Switch to ${theme === 'dark' ? 'Cyber-Light' : 'Cyber-Dark'} mode`}
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-4 h-4 text-amber-400 animate-[spin_10s_linear_infinite]" />
+              ) : (
+                <Moon className="w-4 h-4 text-cyan-600" />
+              )}
+            </button>
+          )}
+
           {/* Mobile hamburger */}
           <button
             type="button"
@@ -165,39 +187,39 @@ export function Navigation({
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-neutral-800 bg-neutral-950 px-6 py-4 flex flex-col gap-3">
+        <div className="md:hidden border-b border-neutral-800 dark:border-neutral-800 light:border-slate-200 bg-neutral-950 dark:bg-neutral-950 light:bg-white px-6 py-4 flex flex-col gap-3 transition-colors duration-300">
           <a
             href="#projects"
             onClick={() => setMobileMenuOpen(false)}
-            className="text-sm font-medium text-neutral-300 hover:text-white py-1"
+            className="text-sm font-medium text-neutral-300 dark:text-neutral-300 light:text-slate-700 hover:text-white dark:hover:text-white light:hover:text-cyan-600 py-1"
           >
             Projects
           </a>
           <a
             href="#spatial-lab"
             onClick={() => setMobileMenuOpen(false)}
-            className="text-sm font-medium text-neutral-300 hover:text-white py-1"
+            className="text-sm font-medium text-neutral-300 dark:text-neutral-300 light:text-slate-700 hover:text-white dark:hover:text-white light:hover:text-cyan-600 py-1"
           >
             3D Spatial Lab
           </a>
           <a
             href="#experience"
             onClick={() => setMobileMenuOpen(false)}
-            className="text-sm font-medium text-neutral-300 hover:text-white py-1"
+            className="text-sm font-medium text-neutral-300 dark:text-neutral-300 light:text-slate-700 hover:text-white dark:hover:text-white light:hover:text-cyan-600 py-1"
           >
             Experience & Internships
           </a>
           <a
             href="#skills"
             onClick={() => setMobileMenuOpen(false)}
-            className="text-sm font-medium text-neutral-300 hover:text-white py-1"
+            className="text-sm font-medium text-neutral-300 dark:text-neutral-300 light:text-slate-700 hover:text-white dark:hover:text-white light:hover:text-cyan-600 py-1"
           >
             Technical Skills & Languages
           </a>
           <a
             href="#education"
             onClick={() => setMobileMenuOpen(false)}
-            className="text-sm font-medium text-neutral-300 hover:text-white py-1"
+            className="text-sm font-medium text-neutral-300 dark:text-neutral-300 light:text-slate-700 hover:text-white dark:hover:text-white light:hover:text-cyan-600 py-1"
           >
             Education & Awards
           </a>
@@ -227,6 +249,26 @@ export function Navigation({
             >
               <Smartphone className="w-4 h-4 text-cyan-400" />
               <span>Install Mobile Application (PWA)</span>
+            </button>
+          )}
+
+          {onToggleTheme && (
+            <button
+              type="button"
+              onClick={() => {
+                onToggleTheme();
+              }}
+              className="flex items-center justify-between py-2 px-3 rounded-lg bg-neutral-900 dark:bg-neutral-900 light:bg-slate-100 border border-neutral-700 dark:border-neutral-700 light:border-slate-300 text-xs font-mono cursor-pointer"
+            >
+              <div className="flex items-center gap-2 text-neutral-300 dark:text-neutral-300 light:text-slate-800">
+                {theme === 'dark' ? (
+                  <Sun className="w-4 h-4 text-amber-400" />
+                ) : (
+                  <Moon className="w-4 h-4 text-cyan-600" />
+                )}
+                <span>Mode: {theme === 'dark' ? 'Dark Cyber' : 'High-Contrast Light'}</span>
+              </div>
+              <span className="text-[10px] text-cyan-400 dark:text-cyan-400 light:text-cyan-700 font-bold uppercase">Toggle</span>
             </button>
           )}
 

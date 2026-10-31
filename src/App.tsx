@@ -16,10 +16,14 @@ import { JarvisAboutModal } from './components/JarvisAboutModal';
 import { MobileInstallModal } from './components/MobileInstallModal';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { LiveVoiceModal } from './components/LiveVoiceModal';
+import { RevealSection } from './components/RevealSection';
+import { ScrollProgressBar } from './components/ScrollProgressBar';
 import { ModelType } from './components/SpatialViewport';
 import { Project } from './utils/portfolioLogic';
+import { useTheme } from './hooks/useTheme';
 
 export default function App() {
+  const { theme, switchTheme, isDark } = useTheme();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [jarvisBriefProject, setJarvisBriefProject] = useState<Project | null>(null);
   const [isResumeOpen, setIsResumeOpen] = useState(false);
@@ -63,20 +67,33 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen relative text-neutral-100 flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-200 bg-neutral-950 overflow-x-hidden">
+    <div className={`min-h-screen relative flex flex-col font-sans overflow-x-hidden transition-colors duration-300 ${
+      theme === 'dark'
+        ? 'text-neutral-100 bg-neutral-950 selection:bg-cyan-500/30 selection:text-cyan-200'
+        : 'text-neutral-900 bg-slate-50 selection:bg-cyan-500/20 selection:text-cyan-900'
+    }`}>
       {/* Sci-Fi Cyber HUD Background Image Layer */}
       <div
-        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat bg-fixed opacity-50 pointer-events-none"
+        className={`fixed inset-0 z-0 bg-cover bg-center bg-no-repeat bg-fixed pointer-events-none transition-opacity duration-300 ${
+          theme === 'dark' ? 'opacity-50' : 'opacity-15 invert brightness-125'
+        }`}
         style={{
           backgroundImage: `url('/assets/aistudio/file_00000000e83c8208a52b2a4ba944f902_4131373d.png')`,
         }}
       />
 
       {/* Atmospheric gradient overlay for high contrast and legible typography */}
-      <div className="fixed inset-0 z-0 bg-gradient-to-b from-neutral-950/80 via-neutral-950/65 to-neutral-950/90 pointer-events-none" />
+      <div className={`fixed inset-0 z-0 pointer-events-none transition-colors duration-300 ${
+        theme === 'dark'
+          ? 'bg-gradient-to-b from-neutral-950/80 via-neutral-950/65 to-neutral-950/90'
+          : 'bg-gradient-to-b from-slate-50/90 via-slate-100/75 to-slate-50/95'
+      }`} />
 
       {/* Foreground Content */}
       <div className="relative z-10 flex flex-col min-h-screen pb-24 md:pb-0">
+        {/* Animated Top Scroll Progress Bar */}
+        <ScrollProgressBar />
+
         {/* 3-Zone Top Navigation */}
         <Navigation
           onOpenResume={() => setIsResumeOpen(true)}
@@ -84,36 +101,52 @@ export default function App() {
           onReplayJarvis={() => setShowJarvisWelcome(true)}
           onOpenInstall={() => setIsInstallModalOpen(true)}
           onOpenLiveVoice={() => setIsLiveVoiceOpen(true)}
+          theme={theme}
+          onToggleTheme={switchTheme}
         />
 
-        {/* Main Content Sections */}
+        {/* Main Content Sections with Intersection Observer Transitions */}
         <main className="flex-1">
-          <Hero
-            onOpenResume={() => setIsResumeOpen(true)}
-            onExploreProjects={handleScrollToProjects}
-            onOpenJarvisAbout={() => setIsJarvisAboutOpen(true)}
-            onOpenLiveVoice={() => setIsLiveVoiceOpen(true)}
-          />
+          <RevealSection direction="up" delayMs={0} threshold={0.05}>
+            <Hero
+              onOpenResume={() => setIsResumeOpen(true)}
+              onExploreProjects={handleScrollToProjects}
+              onOpenJarvisAbout={() => setIsJarvisAboutOpen(true)}
+              onOpenLiveVoice={() => setIsLiveVoiceOpen(true)}
+            />
+          </RevealSection>
 
-        <ProjectsSection
-          onSelectProject={(project) => setSelectedProject(project)}
-          onInspect3D={handleInspect3D}
-          onJarvisBrief={(project) => setJarvisBriefProject(project)}
-        />
+          <RevealSection direction="up" delayMs={60} threshold={0.08}>
+            <ProjectsSection
+              onSelectProject={(project) => setSelectedProject(project)}
+              onInspect3D={handleInspect3D}
+              onJarvisBrief={(project) => setJarvisBriefProject(project)}
+            />
+          </RevealSection>
 
-        <SpatialLabSection
-          currentModel={activeSpatialModel}
-          onModelChange={setActiveSpatialModel}
-        />
+          <RevealSection direction="up" delayMs={60} threshold={0.08}>
+            <SpatialLabSection
+              currentModel={activeSpatialModel}
+              onModelChange={setActiveSpatialModel}
+            />
+          </RevealSection>
 
-        <ExperienceSection />
+          <RevealSection direction="up" delayMs={60} threshold={0.08}>
+            <ExperienceSection />
+          </RevealSection>
 
-        <SkillsSection />
+          <RevealSection direction="up" delayMs={60} threshold={0.08}>
+            <SkillsSection />
+          </RevealSection>
 
-        <EducationSection />
+          <RevealSection direction="up" delayMs={60} threshold={0.08}>
+            <EducationSection />
+          </RevealSection>
 
-        <ContactSection />
-      </main>
+          <RevealSection direction="up" delayMs={60} threshold={0.08}>
+            <ContactSection />
+          </RevealSection>
+        </main>
 
       {/* Footer */}
       <Footer onOpenResume={() => setIsResumeOpen(true)} />
